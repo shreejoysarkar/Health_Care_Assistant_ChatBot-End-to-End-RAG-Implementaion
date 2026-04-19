@@ -1,0 +1,19 @@
+langchain
+langchain-core
+langchain-community
+ipykernel
+pypdf
+pymupdf
+sentence-transformers
+faiss-cpu
+langchain_chroma
+beautifulsoup4
+arxiv
+langchain-text-splitters
+python-dotenv
+langchain-ollama
+sentence_transformers
+langchain_huggingface 
+dotenv
+pydantic
+-e .
