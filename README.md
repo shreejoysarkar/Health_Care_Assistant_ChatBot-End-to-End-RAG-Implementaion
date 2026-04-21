@@ -34,3 +34,14 @@ medibot\Scripts\activate
 ```bash
 uv pip install -r requirements.txt
 ```
+
+
+This project uses medical reference data from Davidson’s Principles & Practice of Medicine AND Gale Encyclopedia of Medicine.
+
+The PDF is not included in this repository due to GitHub’s file size limitations.
+
+Download it from here:
+https://drive.google.com/drive/folders/1ogzqlXf0vpLxMO4oZCT0dxlQbRcKdD2O?usp=sharing
+
+
+After downloading, place the file inside a Data/ folder in the root directory of the project.
