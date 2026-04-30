@@ -56,6 +56,12 @@ class Settings(BaseSettings):
     app_name: str = "Health Care Assistant"
     app_version: str = "0.1.0"
 
+    # Data Directory
+    data_directory: str = "Data/Input"
+    output_directory: str = "Data/Output"
+
+    
+
 
 @lru_cache
 def get_settings() -> Settings:

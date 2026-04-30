@@ -16,4 +16,7 @@ sentence_transformers
 langchain_huggingface 
 dotenv
 pydantic
+docling
+docling-core
+langchain-docling
 -e .
