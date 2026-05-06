@@ -1,9 +1,9 @@
+ollama
 langchain
 langchain-core
 langchain-community
 ipykernel
-pypdf
-pymupdf
+pypdfium2
 sentence-transformers
 faiss-cpu
 langchain_chroma
@@ -16,6 +16,12 @@ sentence_transformers
 langchain_huggingface 
 dotenv
 pydantic
+chonkie==1.5.0
+matplotlib
+seaborn
+pandas
+google-generativeai
+chonkie[gemini]
 docling
 docling-core
 langchain-docling

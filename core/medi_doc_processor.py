@@ -1,103 +1,73 @@
-"""Document processing module for loading and chunking documents."""
+'''
+This code utilizes the Docling library to convert medical PDF documents into Markdown format. 
+It employs a GPU-accelerated pipeline to process multiple files efficiently. 
+The converter is configured to enable remote services, disable OCR, 
+and perform detailed table structure and picture description generation for enhanced data extraction.
 
-import tempfile
+
+File is run on the Google Colab.
+'''
+
+
+import os
 from pathlib import Path
-from typing import BinaryIO
+from docling.document_converter import DocumentConverter, PdfFormatOption
+from docling.datamodel.base_models import InputFormat
+from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
+from docling.datamodel.pipeline_options import (
+    PdfPipelineOptions,
+    TableStructureOptions,
+    TableFormerMode,
+    AcceleratorOptions,
+    AcceleratorDevice
+)
 
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+# 1. Setup the GPU Pipeline
+pipeline_options = PdfPipelineOptions(
+    enable_remote_services=True,
+    do_ocr=False,
+    do_table_structure=True,
+    generate_picture_images=True,
+    do_picture_description=True,
+    table_structure_options=TableStructureOptions(
+        mode=TableFormerMode.ACCURATE
+    ),
+    accelerator_options=AcceleratorOptions(
+        num_threads=8,
+        device=AcceleratorDevice.CUDA # Forces GPU usage
+    )
+)
 
-from utils.config import get_settings
-from utils.logger import get_logger
-
-logger = get_logger(__name__)
-
-
-class DocumentProcessor:
-    """process documents for RAG pipeline"""
-
-    SUPPORTED_EXTENSIONS = {".pdf",".txt", ".csv"}
-
-    def __init__(
-            self,
-            chunk_size :int | None = None,
-            chunk_overlap :int | None = None,
-    ):
-        """initialize document processor.
-        
-        Args:
-            chunk_size (int | None, optional)
-            chunk_overlap (int | None, optional)
-        """
-        settings = get_settings()
-        self.chunk_size = chunk_size or settings.chunk_size
-        self.chunk_overlap = chunk_overlap or settings.chunk_overlap
-
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=self.chunk_size,
-            chunk_overlap=self.chunk_overlap,
-            separators=["\n\n", "\n", ". ", " ", ""],
-            length_function=len,
+converter = DocumentConverter(
+    format_options={
+        InputFormat.PDF: PdfFormatOption(
+            pipeline_options=pipeline_options,
+            backend=PyPdfiumDocumentBackend,
         )
+    }
+)
 
-        logger.info(
-            f"DocumentProcessor initialized with chunk_size = {self.chunk_size}, "
-            f"chunk_overlap = {self.chunk_overlap}"
-        )
+# 2. Process the Documents
+output_dir = Path("Output")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+# Find all PDFs in the current Colab folder
+pdf_files = list(Path('.').glob("*.pdf"))
+print(f"Found {len(pdf_files)} PDF files to process.")
+
+for pdf_file in pdf_files:
+    print(f"Processing: {pdf_file.name}...")
+    try:
+        # Convert PDF
+        result = converter.convert(pdf_file)
+        markdown_content = result.document.export_to_markdown()
         
+        # Save Markdown
+        output_file = output_dir / f"{pdf_file.stem}.md"
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write(markdown_content)
+        print(f"✅ Successfully saved: {output_file.name}")
+    except Exception as e:
+        print(f"❌ Error processing {pdf_file.name}: {e}")
 
-
-    def load_pdf(self, file_path :str | Path) -> list[Document]:
-        """
-        Load a Pdf
-        
-        Args : 
-        file_path : Path to pdf file
-
-        returns: list of Documents
-        """
-
-        file_path = Path(file_path)
-        logger.info(f"loading PDF : {file_path.name}")
-
-        loader = PyPDFLoader(str(file_path))
-        documents = loader.load()
-
-        logger.info(f"loaded {len(documents)} pages from PDF : {file_path.name}")
-        return documents
-    
-
-    
-    def split_documents(self, documents : list[Document]) -> list[Document]:
-        """split documents into chunks
-        
-        Args: 
-            documents : list of document object
-            
-        Returns : 
-            List of chunked document objects
-            
-            """
-        logger.info(f"splitting {len(documents)} documents into chunks")
-        
-        chunks = self.text_splitter.split_documents(documents)
-        logger.info(f"split into {len(chunks)} chunks")
-
-        return chunks
-
-    def process_file(self, file_path : str | Path) -> list[Document]:
-        """load and split the file in one step
-
-        Args:
-            file_path (str | Path): path to file
-
-        Returns:
-            list[Document]: list of chunked document objects
-        """
-
-        Document = self.load_file(file_path)
-        chunks = self.split_documents(Document)
-
-        return chunks
-
+print("\n🎉 All processing complete!")

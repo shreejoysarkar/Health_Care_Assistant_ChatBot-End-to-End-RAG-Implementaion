@@ -19,19 +19,19 @@ class Settings(BaseSettings):
     HF_TOKEN: str
 
     # Qdrant Cloud Configuration
-    qdrant_url: str
-    qdrant_api_key: str
+    qdrant_url: str | None = None
+    qdrant_api_key: str | None = None
 
     # Collection Settings
     collection_name: str = "rag_documents"
 
     # Document Processing Settings
-    chunk_size: int = 1000
+    chunk_size: int = 1024
     chunk_overlap: int = 200
 
     # Model Configuration
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
-    llm_model: str = "gemma:2b"
+    llm_model: str = "llama3.1"
     llm_temperature: float = 0.0
 
     # Retrieval Settings
@@ -58,9 +58,7 @@ class Settings(BaseSettings):
 
     # Data Directory
     data_directory: str = "Data/Input"
-    output_directory: str = "Data/Output"
 
-    
 
 
 @lru_cache
