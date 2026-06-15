@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     chunk_overlap: int = 200
 
     # Model Configuration
-    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    embedding_model: str = "BAAI/bge-m3"
     llm_model: str = "llama3.1"
     llm_temperature: float = 0.0
 

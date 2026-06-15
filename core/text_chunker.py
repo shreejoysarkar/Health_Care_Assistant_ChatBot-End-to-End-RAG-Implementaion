@@ -231,7 +231,7 @@ class DocumentChunker:
         settings = get_settings()
         self.chunk_size = chunk_size or settings.chunk_size
         self.chunk_overlap = chunk_overlap or settings.chunk_overlap
-        self.tokenizer_name = settings.embedding_model or "sentence-transformers/all-MiniLM-L6-v2"
+        self.tokenizer_name = settings.embedding_model or "BAAI/bge-m3"
 
         # Initialize local RecursiveChunker
         self.text_chunker = RecursiveChunker(
