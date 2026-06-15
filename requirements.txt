@@ -25,4 +25,6 @@ chonkie[gemini]
 docling
 docling-core
 langchain-docling
+qdrant-client
+FlagEmbedding
 -e .

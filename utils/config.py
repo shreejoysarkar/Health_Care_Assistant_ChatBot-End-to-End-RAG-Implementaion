@@ -23,7 +23,12 @@ class Settings(BaseSettings):
     qdrant_api_key: str | None = None
 
     # Collection Settings
-    collection_name: str = "rag_documents"
+    collection_name: str = "medical_rag"
+
+    # Embedding Pipeline Settings
+    embedding_batch_size: int = 64
+    embedding_max_length: int = 8192
+    upsert_batch_size: int = 100
 
     # Document Processing Settings
     chunk_size: int = 1024
