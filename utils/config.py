@@ -42,6 +42,11 @@ class Settings(BaseSettings):
     # Retrieval Settings
     retrieval_k: int = 4
 
+    # Re-ranking Settings
+    reranker_model: str = "BAAI/bge-reranker-v2-m3"
+    reranker_initial_k: int = 20
+    reranker_max_length: int = 1024
+
     # Logging
     log_level: str = "INFO"
 

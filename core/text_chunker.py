@@ -391,31 +391,3 @@ class DocumentChunker:
             logger.error(f"Failed to save chunks JSON: {e}")
 
         return all_chunks
-
-if __name__ == "__main__":
-    # Configure logging level to see full info
-    import logging
-    logging.basicConfig(level=logging.INFO)
-
-    chunker = DocumentChunker()
-    all_extracted_chunks = chunker.process_all_markdowns()
-    
-    if all_extracted_chunks:
-        # Get a random chunk to display
-        import random
-        sample_idx = random.randint(0, len(all_extracted_chunks) - 1)
-        sample = all_extracted_chunks[sample_idx]
-        
-        print("\n=== SAMPLE CHUNK INGESTION VERIFICATION ===")
-        print(f"Index: {sample_idx}")
-        print(f"Source Document: {sample['metadata']['source']}")
-        print(f"Chapter: {sample['metadata']['chapter']}")
-        print(f"Section: {sample['metadata']['section']}")
-        print(f"Subsection: {sample['metadata']['subsection']}")
-        print(f"Type: {sample['metadata']['chunk_type']}")
-        print(f"Tokens: {sample['metadata']['token_count']}")
-        print(f"Demographic Focus: {sample['metadata']['demographic_focus']}")
-        print(f"Clinical Context: {sample['metadata']['clinical_context']}")
-        print(f"Text Preview:\n{sample['text'][:400]}...")
-        print("==========================================")
-        print(f"Total chunks created and saved: {len(all_extracted_chunks)}")
